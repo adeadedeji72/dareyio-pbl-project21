@@ -9,3 +9,4 @@ Tools required
 - kubectl console utility
 - *cfssl* and *cfssljson* utilities
 - Kubernetes cluster
+- <span style="color:blue">some *blue* text</span>
