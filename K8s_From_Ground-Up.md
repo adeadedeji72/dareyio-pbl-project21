@@ -296,3 +296,14 @@ aws elbv2 register-targets \
 
 ![](awscli_targetgroups_targets.jpg)
 
+17. Create a listener to listen for requests and forward to the target nodes on TCP port 6443
+~~~
+aws elbv2 create-listener \
+--load-balancer-arn ${LOAD_BALANCER_ARN} \
+--protocol TCP \
+--port 6443 \
+--default-actions Type=forward,TargetGroupArn=${TARGET_GROUP_ARN} \
+--output text --query 'Listeners[].ListenerArn'
+~~~
+
+![](awscli_lbalancers_listeners.jpg)
