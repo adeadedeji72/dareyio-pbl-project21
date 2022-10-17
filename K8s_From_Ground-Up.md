@@ -41,3 +41,40 @@ Verify your installation with
 ~~~
 aws --version 
 ~~~
+
+To configure your AWS CLI – run your shell commands:
+~~~
+aws configure --profile %your_username%
+AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
+AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+Default region name [None]: us-west-1
+Default output format [None]: json
+~~~
+
+Test AWS cli with:
+
+~~~
+aws ec2 describe-vpcs
+~~~
+You should see the description of your vpcs in json format.
+
+**Install kubectl**
+Kubernetes cluster has a Web API that can receive HTTP/HTTPS requests, but it is quite cumbersome to curl an API each and every time you need to send some command, so kubectl command tool was developed to ease a K8s administrator’s life. We will use kubectl to ease our adminstration tasks.
+
+Download the binary
+~~~
+wget https://storage.googleapis.com/kubernetes-release/release/v1.25.3/bin/linux/amd64/kubectl
+~~~
+Make it executable
+~~~
+chmod +x kubectl
+~~~
+Move to the Bin directory
+~~~
+sudo mv kubectl /usr/local/bin/
+~~~
+
+Verify that kubectl version 1.25.3 or higher is installed:
+~~~
+kubectl version --client
+~~~
