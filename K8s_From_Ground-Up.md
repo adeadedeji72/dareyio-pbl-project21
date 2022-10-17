@@ -78,3 +78,51 @@ Verify that kubectl version 1.25.3 or higher is installed:
 ~~~
 kubectl version --client
 ~~~
+
+**Install CFSSL and CFSSLJSON**
+
+~~~
+wget -q --show-progress --https-only --timestamping \
+  https://storage.googleapis.com/kubernetes-the-hard-way/cfssl/1.4.1/linux/cfssl \
+  https://storage.googleapis.com/kubernetes-the-hard-way/cfssl/1.4.1/linux/cfssljson
+chmod +x cfssl cfssljson
+sudo mv cfssl cfssljson /usr/local/bin/
+~~~
+
+### **AWS CLOUD RESOURCES FOR KUBERNETES CLUSTER** ###
+As we already know, we need some machines to run the control plane and the worker nodes. In this section, you will provision EC2 Instances required to run your K8s cluster. You can use Terraform for this. But it is highly recommended to start out first with manual provisioning using awscli and have thorough knowledge about the whole setup. After that, you can destroy the entire project and start all over again using Terraform. This manual approach will solidify your skills and give you the opportunity to face more challenges.
+
+#### **Step 1 – Configure Network Infrastructure** ####
+Virtual Private Cloud – VPC
+
+1. Create a directory named k8s-cluster-from-ground-up
+
+1. Create a VPC and store the ID as a variable:
+~~~
+VPC_ID=$(aws ec2 create-vpc \
+--cidr-block 172.31.0.0/16 \
+--output text --query 'Vpc.VpcId'
+)
+~~~
+
+1. Tag the VPC so that it is named:
+~~~
+NAME=k8s-cluster-from-ground-up
+aws ec2 create-tags \
+  --resources ${VPC_ID} \
+  --tags Key=Name,Value=${NAME}
+~~~
+
+1. Enable DNS support for your VPC:
+~~~
+aws ec2 modify-vpc-attribute \
+--vpc-id ${VPC_ID} \
+--enable-dns-support '{"Value": true}'
+~~~
+
+1. Enable DNS support for hostnames:
+~~~
+aws ec2 modify-vpc-attribute \
+--vpc-id ${VPC_ID} \
+--enable-dns-hostnames '{"Value": true}'
+~~~
