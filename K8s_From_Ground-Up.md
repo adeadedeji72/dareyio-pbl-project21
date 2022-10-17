@@ -325,10 +325,24 @@ KUBERNETES_PUBLIC_ADDRESS=$(aws elbv2 describe-load-balancers \
 
 1. Get an image to create EC2 instances:
 ~~~
-IMAGE_ID=$(aws ec2 describe-images --owners 762376985576 \
+IMAGE_ID=$(aws ec2 describe-images --owners 099720109477 \
   --filters \
   'Name=root-device-type,Values=ebs' \
   'Name=architecture,Values=x86_64' \
   'Name=name,Values=ubuntu/images/hvm-ssd/ubuntu-xenial-20.04-amd64-server-*' \
   | jq -r '.Images|sort_by(.Name)[-1]|.ImageId')
+~~~
+
+**SSH key-pair**
+
+2. Create SSH Key-Pair
+~~~
+mkdir -p ssh
+~~~
+~~~
+aws ec2 create-key-pair \
+  --key-name ${NAME} \
+  --output text --query 'KeyMaterial' \
+  > ssh/${NAME}.id_rsa
+chmod 600 ssh/${NAME}.id_rsa
 ~~~
