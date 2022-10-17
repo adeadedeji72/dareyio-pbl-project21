@@ -270,4 +270,4 @@ LOAD_BALANCER_ARN=$(aws elbv2 create-load-balancer \
 --type network \
 --output text --query 'LoadBalancers[].LoadBalancerArn')
 ~~~
-![](awscli_loadbalance.jpg)
+![](awscli_loadbalancer.jpg)
