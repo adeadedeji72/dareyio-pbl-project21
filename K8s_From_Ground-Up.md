@@ -271,3 +271,28 @@ LOAD_BALANCER_ARN=$(aws elbv2 create-load-balancer \
 --output text --query 'LoadBalancers[].LoadBalancerArn')
 ~~~
 ![](awscli_loadbalancer.jpg)
+
+**Tagret Group**
+
+15. Create a target group: (For now it will be unhealthy because there are no real targets yet.)
+~~~
+TARGET_GROUP_ARN=$(aws elbv2 create-target-group \
+  --name ${NAME} \
+  --protocol TCP \
+  --port 6443 \
+  --vpc-id ${VPC_ID} \
+  --target-type ip \
+  --output text --query 'TargetGroups[].TargetGroupArn')
+~~~
+
+![](awscli_targetgroups.jpg)
+
+16. Register targets: (Just like above, no real targets. You will just put the IP addresses so that, when the nodes become available, they will be used as targets.)
+~~~
+aws elbv2 register-targets \
+  --target-group-arn ${TARGET_GROUP_ARN} \
+  --targets Id=172.31.0.1{0,1,2}
+~~~
+
+![](awscli_targetgroups_targets.jpg)
+
