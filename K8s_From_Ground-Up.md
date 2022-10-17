@@ -210,6 +210,7 @@ aws ec2 create-route \
 ~~~
 
 **SECURITY GROUPS**
+
 13. Configure the Security Groups
 
 ~~~
