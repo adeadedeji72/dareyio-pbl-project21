@@ -128,3 +128,28 @@ aws ec2 modify-vpc-attribute \
 ~~~
 
 ![](awscli_vpcc_config.jpg)
+
+**AWS Region**
+
+6. Set the required region
+~~~
+AWS_REGION=eu-central-1
+~~~
+**Dynamic Host Configuration Protocol – DHCP**
+
+7. Configure DHCP Options Set:
+
+Dynamic Host Configuration Protocol (DHCP) is a network management protocol used on Internet Protocol networks for automatically assigning IP addresses and other communication parameters to devices connected to the network using a client–server architecture.
+
+~~~
+DHCP_OPTION_SET_ID=$(aws ec2 create-dhcp-options \
+  --dhcp-configuration \
+    "Key=domain-name,Values=$AWS_REGION.compute.internal" \
+    "Key=domain-name-servers,Values=AmazonProvidedDNS" \
+  --output text --query 'DhcpOptions.DhcpOptionsId')
+~~~
+
+8. Tag the DHCP Option set:
+aws ec2 create-tags \
+  --resources ${DHCP_OPTION_SET_ID} \
+  --tags Key=Name,Value=${NAME}
