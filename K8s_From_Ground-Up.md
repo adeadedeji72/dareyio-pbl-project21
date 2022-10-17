@@ -257,3 +257,17 @@ aws ec2 authorize-security-group-ingress \
   --port -1 \
   --cidr 0.0.0.0/0
 ~~~
+
+
+**Network Load Balancer**
+
+14. Create a network Load balancer
+~~~
+LOAD_BALANCER_ARN=$(aws elbv2 create-load-balancer \
+--name ${NAME} \
+--subnets ${SUBNET_ID} \
+--scheme internet-facing \
+--type network \
+--output text --query 'LoadBalancers[].LoadBalancerArn')
+~~~
+![](awscli_loadbalance.jpg)
