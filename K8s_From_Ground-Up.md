@@ -307,3 +307,28 @@ aws elbv2 create-listener \
 ~~~
 
 ![](awscli_lbalancers_listeners.jpg)
+
+**K8s Public Address**
+
+18. Get the Kubernetes Public address
+~~~
+KUBERNETES_PUBLIC_ADDRESS=$(aws elbv2 describe-load-balancers \
+--load-balancer-arns ${LOAD_BALANCER_ARN} \
+--output text --query 'LoadBalancers[].DNSName')
+~~~
+
+### **STEP 2 – CREATE COMPUTE RESOURCES** ###
+
+#### Step 2 – Create Compute Resources ####
+
+**AMI**
+
+1. Get an image to create EC2 instances:
+~~~
+IMAGE_ID=$(aws ec2 describe-images --owners 762376985576 \
+  --filters \
+  'Name=root-device-type,Values=ebs' \
+  'Name=architecture,Values=x86_64' \
+  'Name=name,Values=ubuntu/images/hvm-ssd/ubuntu-xenial-20.04-amd64-server-*' \
+  | jq -r '.Images|sort_by(.Name)[-1]|.ImageId')
+~~~
