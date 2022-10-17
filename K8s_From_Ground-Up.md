@@ -127,7 +127,7 @@ aws ec2 modify-vpc-attribute \
 --enable-dns-hostnames '{"Value": true}'
 ~~~
 
-![](awscli_vpcc_config.jpg)
+![](awscli_vpcs_config.jpg)
 
 **AWS Region**
 
