@@ -153,3 +153,39 @@ DHCP_OPTION_SET_ID=$(aws ec2 create-dhcp-options \
 aws ec2 create-tags \
   --resources ${DHCP_OPTION_SET_ID} \
   --tags Key=Name,Value=${NAME}
+
+![](awscli_domain_config.jpg)
+
+9. Associate the DHCP Option set with the VPC:
+~~~
+aws ec2 associate-dhcp-options \
+  --dhcp-options-id ${DHCP_OPTION_SET_ID} \
+  --vpc-id ${VPC_ID}
+~~~
+
+**Subnet**
+
+10. Create the Subnet:
+~~~
+SUBNET_ID=$(aws ec2 create-subnet \
+  --vpc-id ${VPC_ID} \
+  --cidr-block 172.31.0.0/24 \
+  --output text --query 'Subnet.SubnetId')
+aws ec2 create-tags \
+  --resources ${SUBNET_ID} \
+  --tags Key=Name,Value=${NAME}
+~~~
+
+**Internet Gateway – IGW**
+
+11. Create the Internet Gateway and attach it to the VPC:
+~~~
+INTERNET_GATEWAY_ID=$(aws ec2 create-internet-gateway \
+  --output text --query 'InternetGateway.InternetGatewayId')
+aws ec2 create-tags \
+  --resources ${INTERNET_GATEWAY_ID} \
+  --tags Key=Name,Value=${NAME}
+aws ec2 attach-internet-gateway \
+  --internet-gateway-id ${INTERNET_GATEWAY_ID} \
+  --vpc-id ${VPC_ID}
+~~~
