@@ -346,3 +346,28 @@ aws ec2 create-key-pair \
   > ssh/${NAME}.id_rsa
 chmod 600 ssh/${NAME}.id_rsa
 ~~~
+
+**EC2 Instances for Controle Plane (Master Nodes)**
+
+3. Create 3 Master nodes: Note – Using t2.micro instead of t2.small as t2.micro is covered by AWS free tier
+~~~
+for i in 0 1 2; do
+  instance_id=$(aws ec2 run-instances \
+    --associate-public-ip-address \
+    --image-id ${IMAGE_ID} \
+    --count 1 \
+    --key-name ${NAME} \
+    --security-group-ids ${SECURITY_GROUP_ID} \
+    --instance-type t2.micro \
+    --private-ip-address 172.31.0.1${i} \
+    --user-data "name=master-${i}" \
+    --subnet-id ${SUBNET_ID} \
+    --output text --query 'Instances[].InstanceId')
+  aws ec2 modify-instance-attribute \
+    --instance-id ${instance_id} \
+    --no-source-dest-check
+  aws ec2 create-tags \
+    --resources ${instance_id} \
+    --tags "Key=Name,Value=${NAME}-master-${i}"
+done
+~~~
