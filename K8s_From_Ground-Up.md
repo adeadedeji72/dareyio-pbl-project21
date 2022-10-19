@@ -177,6 +177,8 @@ aws ec2 create-tags \
   --tags Key=Name,Value=${NAME}
 ~~~
 
+![](awscli_supnet_ip_tag.jgp)
+
 **Internet Gateway – IGW**
 
 11. Create the Internet Gateway and attach it to the VPC:
