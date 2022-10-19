@@ -166,7 +166,7 @@ aws ec2 associate-dhcp-options \
 
 **Subnet**
 
-10. Create the Subnet:
+10. Create a Subnet and tag it with a name:
 ~~~
 SUBNET_ID=$(aws ec2 create-subnet \
   --vpc-id ${VPC_ID} \
