@@ -150,10 +150,11 @@ DHCP_OPTION_SET_ID=$(aws ec2 create-dhcp-options \
 ~~~
 
 8. Tag the DHCP Option set:
+~~~
 aws ec2 create-tags \
   --resources ${DHCP_OPTION_SET_ID} \
   --tags Key=Name,Value=${NAME}
-
+~~~
 ![](awscli_domain_config.jpg)
 
 9. Associate the DHCP Option set with the VPC:
