@@ -177,7 +177,7 @@ aws ec2 create-tags \
   --tags Key=Name,Value=${NAME}
 ~~~
 
-![](awscli_subnet_ip_tag.jgp)
+![](awscli_subnet_ip_tag.jpg)
 
 **Internet Gateway – IGW**
 
