@@ -193,6 +193,8 @@ aws ec2 attach-internet-gateway \
   --vpc-id ${VPC_ID}
 ~~~
 
+![](awscli_intgw.jpg)
+
 **Route tables**
 
 12. Create route tables, associate the route table to subnet, and create a route to allow external traffic to the Internet through the Internet Gateway:
