@@ -402,3 +402,77 @@ done
 ~~~
 
 ![](awscli_instances.jpg)
+
+
+### STEP 3 PREPARE THE SELF-SIGNED CERTIFICATE AUTHORITY AND GENERATE TLS CERTIFICATES ###
+Step 3 Prepare The Self-Signed Certificate Authority And Generate TLS Certificates
+
+The following components running on the Master node will require TLS certificates.
+
+- kube-controller-manager
+- kube-scheduler
+- etcd
+- kube-apiserver
+
+The following components running on the Worker nodes will require TLS certificates.
+
+- kubelet
+- kube-proxy
+Therefore, you will provision a PKI Infrastructure using cfssl which will have a Certificate Authority. The CA will then generate certificates for all the individual components.
+
+**Self-Signed Root Certificate Authority (CA)**
+
+Here, you will provision a CA that will be used to sign additional TLS certificates.
+
+Create a directory and cd into it:
+~~~
+mkdir ca-authority && cd ca-authority
+~~~
+
+Generate the CA configuration file, Root Certificate, and Private key:
+~~~
+cat > ca-config.json <<EOF
+{
+  "signing": {
+    "default": {
+      "expiry": "8760h"
+    },
+    "profiles": {
+      "kubernetes": {
+        "usages": ["signing", "key encipherment", "server auth", "client auth"],
+        "expiry": "8760h"
+      }
+    }
+  }
+}
+EOF
+
+cat > ca-csr.json <<EOF
+{
+  "CN": "Kubernetes",
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "NG",
+      "L": "OYO",
+      "O": "Kubernetes",
+      "OU": "BAYO DEVOPS",
+      "ST": "Ibadan"
+    }
+  ]
+}
+EOF
+
+cfssl gencert -initca ca-csr.json | cfssljson -bare ca
+
+}
+~~~
+
+The 3 important files here are:
+
+- **ca.pem** – The Root Certificate
+- **ca-key.pem** – The Private Key
+- **ca.csr** – The Certificate Signing Request
