@@ -476,3 +476,72 @@ The 3 important files here are:
 - **ca.pem** – The Root Certificate
 - **ca-key.pem** – The Private Key
 - **ca.csr** – The Certificate Signing Request
+
+**Generating TLS Certificates For Client and Server**
+
+You will need to provision Client/Server certificates for all the components. It is a MUST to have encrypted communication within the cluster. Therefore, the server here are the master nodes running the api-server component. While the client is every other component that needs to communicate with the api-server.
+
+Now we have a certificate for the Root CA, we can then begin to request more certificates which the different Kubernetes components, i.e. clients and server, will use to have encrypted communication.
+
+Remember, the clients here refer to every other component that will communicate with the api-server. These are:
+
+- kube-controller-manager
+- kube-scheduler
+- etcd
+- kubelet
+- kube-proxy
+- Kubernetes Admin User
+
+Let us begin with the Kubernetes API-Server Certificate and Private Key
+
+The certificate for the Api-server must have IP addresses, DNS names, and a Load Balancer address included. Otherwise, you will have a lot of difficulties connecting to the api-server.
+
+Generate the Certificate Signing Request (CSR), Private Key and the Certificate for the Kubernetes Master Nodes.
+
+~~~
+{
+cat > master-kubernetes-csr.json <<EOF
+{
+  "CN": "kubernetes",
+   "hosts": [
+   "127.0.0.1",
+   "172.31.0.10",
+   "172.31.0.11",
+   "172.31.0.12",
+   "ip-172-31-0-10",
+   "ip-172-31-0-11",
+   "ip-172-31-0-12",
+   "ip-172-31-0-10.${AWS_REGION}.compute.internal",
+   "ip-172-31-0-11.${AWS_REGION}.compute.internal",
+   "ip-172-31-0-12.${AWS_REGION}.compute.internal",
+   "${KUBERNETES_PUBLIC_ADDRESS}",
+   "kubernetes",
+   "kubernetes.default",
+   "kubernetes.default.svc",
+   "kubernetes.default.svc.cluster",
+   "kubernetes.default.svc.cluster.local"
+  ],
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "NG",
+      "L": "NIGERIA",
+      "O": "Kubernetes",
+      "OU": "BAYO DEVOPS",
+      "ST": "Ibadan"
+    }
+  ]
+}
+EOF
+
+cfssl gencert \
+  -ca=ca.pem \
+  -ca-key=ca-key.pem \
+  -config=ca-config.json \
+  -profile=kubernetes \
+  master-kubernetes-csr.json | cfssljson -bare master-kubernetes
+}
+~~~
