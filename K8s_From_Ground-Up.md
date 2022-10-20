@@ -545,3 +545,112 @@ cfssl gencert \
   master-kubernetes-csr.json | cfssljson -bare master-kubernetes
 }
 ~~~
+
+**Creating the other certificates: for the following Kubernetes components:**
+
+- Scheduler Client Certificate
+- Kube Proxy Client Certificate
+- Controller Manager Client Certificate
+- Kubelet Client Certificates
+- K8s admin user Client Certificate
+
+2. *kube-scheduler* Client Certificate and Private Key
+~~~
+{
+
+cat > kube-scheduler-csr.json <<EOF
+{
+  "CN": "system:kube-scheduler",
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "NG",
+      "L": "OYO",
+      "O": "system:kube-scheduler",
+      "OU": "DAREY.IO DEVOPS",
+      "ST": "Ibadan"
+    }
+  ]
+}
+EOF
+
+cfssl gencert \
+  -ca=ca.pem \
+  -ca-key=ca-key.pem \
+  -config=ca-config.json \
+  -profile=kubernetes \
+  kube-scheduler-csr.json | cfssljson -bare kube-scheduler
+
+}
+~~~
+
+3. **kube-proxy** Client Certificate and Private Key
+~~~
+{
+
+cat > kube-proxy-csr.json <<EOF
+{
+  "CN": "system:kube-proxy",
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "NG",
+      "L": "OYO",
+      "O": "system:node-proxier",
+      "OU": "BAYO DEVOPS",
+      "ST": "Ibadan"
+    }
+  ]
+}
+EOF
+
+cfssl gencert \
+  -ca=ca.pem \
+  -ca-key=ca-key.pem \
+  -config=ca-config.json \
+  -profile=kubernetes \
+  kube-proxy-csr.json | cfssljson -bare kube-proxy
+
+}
+~~~
+
+4. *kube-controller-manager* Client Certificate and Private Key
+~~~
+{
+cat > kube-controller-manager-csr.json <<EOF
+{
+  "CN": "system:kube-controller-manager",
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "NG",
+      "L": "OYO",
+      "O": "system:kube-controller-manager",
+      "OU": "BAYO DEVOPS",
+      "ST": "Ibadan"
+    }
+  ]
+}
+EOF
+
+cfssl gencert \
+  -ca=ca.pem \
+  -ca-key=ca-key.pem \
+  -config=ca-config.json \
+  -profile=kubernetes \
+  kube-controller-manager-csr.json | cfssljson -bare kube-controller-manager
+
+}
+~~~
+
+5. 
+
