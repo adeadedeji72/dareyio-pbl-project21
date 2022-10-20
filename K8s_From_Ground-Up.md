@@ -660,7 +660,10 @@ Also, Kubernetes uses a special-purpose authorization mode called Node Authorize
 Therefore, the certificate to be created must comply to these requirements. In the below example, there are 3 worker nodes, hence we will use bash to loop through a list of the worker nodes’ hostnames, and based on each index, the respective Certificate Signing Request (CSR), private key and client certificates will be generated.
 
 ~~~
- cat > ${instance}-csr.json <<EOF
+for i in 0 1 2; do
+  instance="${NAME}-worker-${i}"
+  instance_hostname="ip-172-31-0-2${i}"
+  cat > ${instance}-csr.json <<EOF
 {
   "CN": "system:node:${instance_hostname}",
   "key": {
@@ -697,4 +700,67 @@ EOF
 done
 ~~~
 
+6. *kubernetes admin user's* Client Certificate and Private Key
+~~~
+ {
+cat > admin-csr.json <<EOF
+{
+  "CN": "admin",
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "NG",
+      "L": "OYO",
+      "O": "system:masters",
+      "OU": "BAYO DEVOPS",
+      "ST": "Ibadan"
+    }
+  ]
+}
+EOF
 
+cfssl gencert \
+  -ca=ca.pem \
+  -ca-key=ca-key.pem \
+  -config=ca-config.json \
+  -profile=kubernetes \
+  admin-csr.json | cfssljson -bare admin
+}
+~~~
+
+7. There is one more pair of certificate and private key we need to generate. That is for the Token Controller: a part of the Kubernetes Controller Manager kube-controller-manager responsible for generating and signing service account tokens which are used by pods or other resources to establish connectivity to the api-server. Read more about Service Accounts from the ![official documentation](https://kubernetes.io/docs/reference/access-authn-authz/service-accounts-admin/).
+
+Alright, let us quickly create the last set of files, and we are done with PKIs
+~~~
+{
+
+cat > service-account-csr.json <<EOF
+{
+  "CN": "service-accounts",
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "NG",
+      "L": "OYO",
+      "O": "Kubernetes",
+      "OU": "BAYO DEVOPS",
+      "ST": "Ibadan"
+    }
+  ]
+}
+EOF
+
+cfssl gencert \
+  -ca=ca.pem \
+  -ca-key=ca-key.pem \
+  -config=ca-config.json \
+  -profile=kubernetes \
+  service-account-csr.json | cfssljson -bare service-account
+}
+~~~
