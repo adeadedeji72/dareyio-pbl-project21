@@ -900,3 +900,10 @@ kubectl config use-context %context-name%
 }
 ~~~
  
+Output:
+~~~
+Cluster "k8s-cluster-from-ground-up" set.
+User "system:kube-proxy" set.
+Context "default" created.
+Switched to context "default".
+~~~
