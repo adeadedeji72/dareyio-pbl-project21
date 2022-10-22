@@ -934,3 +934,34 @@ Notice that the *--server* is set to use *127.0.0.1*. This is because, this comp
   kubectl config use-context default --kubeconfig=kube-controller-manager.kubeconfig
 }
 ~~~
+Output:
+~~~
+Cluster "k8s-cluster-from-ground-up" set.
+User "system:kube-controller-manager" set.
+Context "default" created.
+Switched to context "default".
+~~~
+
+4. Generating the **Kube-Scheduler** Kubeconfig
+~~~
+{
+  kubectl config set-cluster ${NAME} \
+    --certificate-authority=ca.pem \
+    --embed-certs=true \
+    --server=https://127.0.0.1:6443 \
+    --kubeconfig=kube-scheduler.kubeconfig
+
+  kubectl config set-credentials system:kube-scheduler \
+    --client-certificate=kube-scheduler.pem \
+    --client-key=kube-scheduler-key.pem \
+    --embed-certs=true \
+    --kubeconfig=kube-scheduler.kubeconfig
+
+  kubectl config set-context default \
+    --cluster=${NAME} \
+    --user=system:kube-scheduler \
+    --kubeconfig=kube-scheduler.kubeconfig
+
+  kubectl config use-context default --kubeconfig=kube-scheduler.kubeconfig
+}
+~~~
