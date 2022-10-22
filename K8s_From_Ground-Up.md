@@ -858,9 +858,8 @@ done
 ~~~
  ls -lrt *.kubeconfig
 ~~~
+~~~
 -rw------- 1 docker docker 6475 Oct 22 17:29 k8s-cluster-from-ground-up-worker-0.kubeconfig
- 
 -rw------- 1 docker docker 6479 Oct 22 17:29 k8s-cluster-from-ground-up-worker-1.kubeconfig
- 
 -rw------- 1 docker docker 6475 Oct 22 17:29 k8s-cluster-from-ground-up-worker-2.kubeconfig
 ~~~
