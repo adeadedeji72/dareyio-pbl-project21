@@ -1002,3 +1002,37 @@ User "admin" set.
 Context "default" created.
 Switched to context "default".
 ~~~
+
+Distribute the kubeconfig files to appropriate machine as indicated:
+
+a. kube-proxy.kubeconfig k8s-cluster-from-ground-up-worker-0.kubeconfig to worker-0
+b. kube-proxy.kubeconfig k8s-cluster-from-ground-up-worker-1.kubeconfig to worker-1
+c. kube-proxy.kubeconfig k8s-cluster-from-ground-up-worker-1.kubeconfig to worker-2
+~~~
+for i in 0; do
+  instance="${NAME}-worker-${i}"
+  external_ip=$(aws ec2 describe-instances \
+    --filters "Name=tag:Name,Values=${instance}" \
+    --output text --query 'Reservations[].Instances[].PublicIpAddress')
+  scp -i ../ssh/${NAME}.id_rsa \
+kube-proxy.kubeconfig k8s-cluster-from-ground-up-worker-${i}.kubeconfig ubuntu@${external_ip}:~/; \
+done
+
+for i in 1; do
+  instance="${NAME}-worker-${i}"
+  external_ip=$(aws ec2 describe-instances \
+    --filters "Name=tag:Name,Values=${instance}" \
+    --output text --query 'Reservations[].Instances[].PublicIpAddress')
+  scp -i ../ssh/${NAME}.id_rsa \
+kube-proxy.kubeconfig k8s-cluster-from-ground-up-worker-${i}.kubeconfig ubuntu@${external_ip}:~/; \
+done
+
+for i in 2; do
+  instance="${NAME}-worker-${i}"
+  external_ip=$(aws ec2 describe-instances \
+    --filters "Name=tag:Name,Values=${instance}" \
+    --output text --query 'Reservations[].Instances[].PublicIpAddress')
+  scp -i ../ssh/${NAME}.id_rsa \
+kube-proxy.kubeconfig k8s-cluster-from-ground-up-worker-${i}.kubeconfig ubuntu@${external_ip}:~/; \
+done
+~~~
