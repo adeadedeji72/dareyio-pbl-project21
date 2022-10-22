@@ -805,4 +805,12 @@ done
 
 The *kube-proxy*, *kube-controller-manager*, *kube-scheduler*, and *kubelet* client certificates will be used to generate client authentication configuration files later.
 
+### STEP 5 USE `KUBECTL` TO GENERATE KUBERNETES CONFIGURATION FILES FOR AUTHENTICATION ###
  
+In this step, I created some files known as **kubeconfig**, which enables Kubernetes clients to locate and authenticate to the Kubernetes API Servers.
+
+You will need a client tool called **kubectl** to do this. And, by the way, most of the time with Kubernetes will be spent using kubectl commands.
+
+Now it’s time to generate kubeconfig files for the **kubelet**, **controller manager**, **kube-proxy**, and **scheduler clients** and then the **admin user**.
+
+First, let us create a few environment variables for reuse by multiple commands.
