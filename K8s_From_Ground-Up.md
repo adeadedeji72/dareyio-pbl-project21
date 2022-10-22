@@ -1059,3 +1059,35 @@ Kubernetes uses [**etcd** (A distributed key value store)](https://etcd.io/) to 
 To mitigate this risk, we must prepare to encrypt etcd at rest. "At rest" means data that is stored and persists on a disk. Anytime you hear "in-flight" or "in transit" refers to data that is being transferred over the network. "In-flight" encryption is done through TLS.
 
 Generate the encryption key and encode it using *base64*
+~~~
+ETCD_ENCRYPTION_KEY=$(head -c 32 /dev/urandom | base64)
+~~~
+
+** Create an encryption-config.yaml file as documented officially by kubernetes
+~~~
+cat > encryption-config.yaml <<EOF
+kind: EncryptionConfig
+apiVersion: v1
+resources:
+  - resources:
+      - secrets
+    providers:
+      - aescbc:
+          keys:
+            - name: key1
+              secret: ${ETCD_ENCRYPTION_KEY}
+      - identity: {}
+EOF
+~~~
+Send the encryption file to the Controller nodes using scp and a for loop.
+ 
+~~~
+for i in 0 1 2; do
+  instance="${NAME}-master-${i}"
+  external_ip=$(aws ec2 describe-instances \
+    --filters "Name=tag:Name,Values=${instance}" \
+    --output text --query 'Reservations[].Instances[].PublicIpAddress')
+  scp -i ../ssh/${NAME}.id_rsa \
+encryption-config.yaml ubuntu@${external_ip}:~/; \
+done
+~~~
