@@ -907,3 +907,30 @@ User "system:kube-proxy" set.
 Context "default" created.
 Switched to context "default".
 ~~~
+
+3. Generate the Kube-Controller-Manager kubeconfig
+
+Notice that the *--server* is set to use *127.0.0.1*. This is because, this component runs on the API-Server so there is no point routing through the Load Balancer.
+
+~~~
+{
+  kubectl config set-cluster ${NAME} \
+    --certificate-authority=ca.pem \
+    --embed-certs=true \
+    --server=https://127.0.0.1:6443 \
+    --kubeconfig=kube-controller-manager.kubeconfig
+
+  kubectl config set-credentials system:kube-controller-manager \
+    --client-certificate=kube-controller-manager.pem \
+    --client-key=kube-controller-manager-key.pem \
+    --embed-certs=true \
+    --kubeconfig=kube-controller-manager.kubeconfig
+
+  kubectl config set-context default \
+    --cluster=${NAME} \
+    --user=system:kube-controller-manager \
+    --kubeconfig=kube-controller-manager.kubeconfig
+
+  kubectl config use-context default --kubeconfig=kube-controller-manager.kubeconfig
+}
+~~~
