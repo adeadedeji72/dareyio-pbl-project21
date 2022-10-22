@@ -996,3 +996,9 @@ Switched to context "default".
   kubectl config use-context default --kubeconfig=admin.kubeconfig
 }
 ~~~
+Output:
+Cluster "k8s-cluster-from-ground-up" set.
+User "admin" set.
+Context "default" created.
+Switched to context "default".
+~~~
