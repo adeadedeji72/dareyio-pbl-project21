@@ -803,4 +803,6 @@ instance="${NAME}-master-${i}" \
 done
 ~~~
 
+The *kube-proxy*, *kube-controller-manager*, *kube-scheduler*, and *kubelet* client certificates will be used to generate client authentication configuration files later.
 
+ 
