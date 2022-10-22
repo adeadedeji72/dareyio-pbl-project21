@@ -1050,3 +1050,12 @@ for i in 0 1 2; do
 kube-controller-manager.kubeconfig kube-scheduler.kubeconfig admin.kubeconfig ubuntu@${external_ip}:~/; \
 done
 ~~~
+
+### STEP 6 PREPARE THE ETCD DATABASE FOR ENCRYPTION AT REST. ###
+Step 6 Prepare the etcd database for encryption at rest.
+
+Kubernetes uses [**etcd** (A distributed key value store)](https://etcd.io/) to store variety of data which includes the cluster state, application configurations, and secrets. By default, the data that is being persisted to the disk is not encrypted. Any attacker that is able to gain access to this database can exploit the cluster since the data is stored in plain text. Hence, it is a security risk for Kubernetes that needs to be addressed.
+
+To mitigate this risk, we must prepare to encrypt etcd at rest. "At rest" means data that is stored and persists on a disk. Anytime you hear "in-flight" or "in transit" refers to data that is being transferred over the network. "In-flight" encryption is done through TLS.
+
+Generate the encryption key and encode it using *base64*
