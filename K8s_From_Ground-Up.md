@@ -1036,3 +1036,15 @@ for i in 2; do
 kube-proxy.kubeconfig k8s-cluster-from-ground-up-worker-${i}.kubeconfig ubuntu@${external_ip}:~/; \
 done
 ~~~
+
+d. kube-controller-manager.kubeconfig kube-scheduler.kubeconfig admin.kubeconfig to each master
+~~~
+for i in 0 1 2; do
+  instance="${NAME}-master-${i}"
+  external_ip=$(aws ec2 describe-instances \
+    --filters "Name=tag:Name,Values=${instance}" \
+    --output text --query 'Reservations[].Instances[].PublicIpAddress')
+  scp -i ../ssh/${NAME}.id_rsa \
+kube-controller-manager.kubeconfig kube-scheduler.kubeconfig admin.kubeconfig ubuntu@${external_ip}:~/; \
+done
+~~~
