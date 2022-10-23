@@ -1006,9 +1006,10 @@ Switched to context "default".
 
 Distribute the kubeconfig files to appropriate machine as indicated:
 
-a. kube-proxy.kubeconfig k8s-cluster-from-ground-up-worker-0.kubeconfig to worker-0
-b. kube-proxy.kubeconfig k8s-cluster-from-ground-up-worker-1.kubeconfig to worker-1
-c. kube-proxy.kubeconfig k8s-cluster-from-ground-up-worker-1.kubeconfig to worker-2
+- a. kube-proxy.kubeconfig k8s-cluster-from-ground-up-worker-0.kubeconfig to worker-0
+- b. kube-proxy.kubeconfig k8s-cluster-from-ground-up-worker-1.kubeconfig to worker-1
+- c. kube-proxy.kubeconfig k8s-cluster-from-ground-up-worker-1.kubeconfig to worker-2
+
 ~~~
 for i in 0; do
   instance="${NAME}-worker-${i}"
