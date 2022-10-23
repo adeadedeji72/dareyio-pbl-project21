@@ -1224,3 +1224,39 @@ systemctl status etcd
 ~~~
 
 ![](status_etcd.jpg)
+
+### BOOTSTRAP THE CONTROL PLANE ###
+In this section, we configured the components for the control plane on the master/controller nodes.
+
+1. Create the Kubernetes configuration directory:
+~~~
+sudo mkdir -p /etc/kubernetes/config
+~~~
+
+2. Download the official Kubernetes release binaries:
+~~~
+wget -q --show-progress --https-only --timestamping \
+"https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kube-apiserver" \
+"https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kube-controller-manager" \
+"https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kube-scheduler" \
+"https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kubectl"
+~~~
+ 
+3. Install the Kubernetes binaries:
+~~~
+{
+chmod +x kube-apiserver kube-controller-manager kube-scheduler kubectl
+sudo mv kube-apiserver kube-controller-manager kube-scheduler kubectl /usr/local/bin/
+}
+~~~
+
+4. Configure the Kubernetes API Server:
+~~~
+{
+sudo mkdir -p /var/lib/kubernetes/
+
+sudo mv ca.pem ca-key.pem master-kubernetes-key.pem master-kubernetes.pem \
+service-account-key.pem service-account.pem \
+encryption-config.yaml /var/lib/kubernetes/
+}
+~~~
