@@ -1354,3 +1354,10 @@ RestartSec=5
 WantedBy=multi-user.target
 EOF
 ~~~
+
+6. Configure the Kubernetes Scheduler:
+Move the kube-scheduler kubeconfig into place:
+~~~
+sudo mv kube-scheduler.kubeconfig /var/lib/kubernetes/
+sudo mkdir -p /etc/kubernetes/config
+~~~
