@@ -133,7 +133,7 @@ aws ec2 modify-vpc-attribute \
 
 6. Set the required region
 ~~~
-AWS_REGION=eu-central-1
+AWS_REGION=us-east-1
 ~~~
 **Dynamic Host Configuration Protocol – DHCP**
 
