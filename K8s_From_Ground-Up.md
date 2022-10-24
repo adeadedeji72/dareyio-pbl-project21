@@ -1401,3 +1401,15 @@ sudo systemctl enable kube-apiserver kube-controller-manager kube-scheduler
 sudo systemctl start kube-apiserver kube-controller-manager kube-scheduler
 }
 ~~~
+
+Check the status of the three services with:
+~~~
+{
+sudo systemctl status kube-apiserver
+sudo systemctl status kube-controller-manager
+sudo systemctl status kube-scheduler
+}
+~~~
+![](kube-scheduler_status.jpg)
+![](kube-controller-manager_status.jpg)
+![](kube-apiserver_status.jpg)
