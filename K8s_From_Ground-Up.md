@@ -1413,3 +1413,48 @@ sudo systemctl status kube-scheduler
 ![](kube-scheduler_status.jpg)
 ![](kube-controller-manager_status.jpg)
 ![](kube-apiserver_status.jpg)
+
+ 
+**Test that Everything is working fine**
+1. To get the cluster details run:
+~~~
+kubectl cluster-info  --kubeconfig admin.kubeconfig
+~~~
+Output:
+~~~
+Kubernetes control plane is running at https://k8s-cluster-from-ground-up-e07b977b3f987f92.elb.us-east-1.amazonaws.com:6443
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+~~~
+ 
+2. To get the current namespaces:
+~~~
+kubectl get namespaces --kubeconfig admin.kubeconfig
+~~~
+Output:
+~~~
+NAME              STATUS   AGE
+default           Active   16m
+kube-node-lease   Active   16m
+kube-public       Active   16m
+kube-system       Active   16m
+~~~
+
+3. To reach the Kubernetes API Server publicly
+~~~
+curl --cacert /var/lib/kubernetes/ca.pem https://$INTERNAL_IP:6443/version
+~~~
+Output:
+~~~
+{
+  "major": "1",
+  "minor": "25",
+  "gitVersion": "v1.25.3",
+  "gitCommit": "434bfd82814af038ad94d62ebe59b133fcb50506",
+  "gitTreeState": "clean",
+  "buildDate": "2022-10-12T10:49:09Z",
+  "goVersion": "go1.19.2",
+  "compiler": "gc",
+  "platform": "linux/amd64"
+}
+~~~
