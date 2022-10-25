@@ -1630,7 +1630,7 @@ WantedBy=multi-user.target
 EOF
 ~~~
 
-Create directories for to configure kubelet, kube-proxy, cni, and a directory to keep the kubernetes root ca file:
+5. Create directories for to configure kubelet, kube-proxy, cni, and a directory to keep the kubernetes root ca file:
 ~~~
 sudo mkdir -p \
   /var/lib/kubelet \
@@ -1641,4 +1641,18 @@ sudo mkdir -p \
   /var/run/kubernetes
 ~~~
 
+6. Download and Install CNI
+CNI (Container Network Interface), a Cloud Native Computing Foundation project, consists of a specification and libraries for writing plugins to configure network interfaces in Linux containers. It also comes with a number of plugins.
+
+Kubernetes uses CNI as an interface between network providers and Kubernetes Pod networking. Network providers create network plugin that can be used to implement the Kubernetes networking, and includes additional set of rich features that Kubernetes does not provide out of the box.
+
+Download the plugins available from containernetworking’s GitHub repo and read more about CNIs and why it is being developed.
+~~~
+wget -q --show-progress --https-only --timestamping \
+  https://github.com/containernetworking/plugins/releases/download/v0.9.1/cni-plugins-linux-amd64-v0.9.1.tgz
+~~~
  
+Install CNI into */opt/cni/bin/*
+~~~
+sudo tar -xvf cni-plugins-linux-amd64-v0.9.1.tgz -C /opt/cni/bin/
+~~~
