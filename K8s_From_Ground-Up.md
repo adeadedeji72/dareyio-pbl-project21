@@ -1557,3 +1557,50 @@ worker_3_ip=$(aws ec2 describe-instances \
 --output text --query 'Reservations[].Instances[].PublicIpAddress')
 ssh -i k8s-cluster-from-ground-up.id_rsa ubuntu@${worker_3_ip}
 ~~~
+
+3. Disable Swap
+If *swap* is not disabled, kubelet will not start. It is highly recommended to allow Kubernetes to handle resource allocation.
+
+Test if swap is already enabled on the host:
+~~~
+sudo swapon --show
+~~~
+If there is no output, then you are good to go. Otherwise, run below command to turn it off
+~~~
+sudo swapoff -a
+~~~
+
+4. Download and install a container runtime. (Containerd)
+Download binaries for runc, cri-ctl, and containerd
+~~~
+ wget https://github.com/opencontainers/runc/releases/download/v1.0.0-rc93/runc.amd64 \
+  https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.21.0/crictl-v1.21.0-linux-amd64.tar.gz \
+  https://github.com/containerd/containerd/releases/download/v1.4.4/containerd-1.4.4-linux-amd64.tar.gz
+~~~
+
+Configure containerd:
+~~~
+{
+  mkdir containerd
+  tar -xvf crictl-v1.21.0-linux-amd64.tar.gz
+  tar -xvf containerd-1.4.4-linux-amd64.tar.gz -C containerd
+  sudo mv runc.amd64 runc
+  chmod +x  crictl runc  
+  sudo mv crictl runc /usr/local/bin/
+  sudo mv containerd/bin/* /bin/
+}
+~~~
+~~~
+sudo mkdir -p /etc/containerd/
+~~~
+~~~
+cat << EOF | sudo tee /etc/containerd/config.toml
+[plugins]
+  [plugins.cri.containerd]
+    snapshotter = "overlayfs"
+    [plugins.cri.containerd.default_runtime]
+      runtime_type = "io.containerd.runtime.v1.linux"
+      runtime_engine = "/usr/local/bin/runc"
+      runtime_root = ""
+EOF
+~~~
