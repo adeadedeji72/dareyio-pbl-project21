@@ -1604,3 +1604,40 @@ cat << EOF | sudo tee /etc/containerd/config.toml
       runtime_root = ""
 EOF
 ~~~
+
+Create the containerd.service systemd unit file:
+~~~
+cat <<EOF | sudo tee /etc/systemd/system/containerd.service
+[Unit]
+Description=containerd container runtime
+Documentation=https://containerd.io
+After=network.target
+
+[Service]
+ExecStartPre=/sbin/modprobe overlay
+ExecStart=/bin/containerd
+Restart=always
+RestartSec=5
+Delegate=yes
+KillMode=process
+OOMScoreAdjust=-999
+LimitNOFILE=1048576
+LimitNPROC=infinity
+LimitCORE=infinity
+
+[Install]
+WantedBy=multi-user.target
+EOF
+~~~
+
+Create directories for to configure kubelet, kube-proxy, cni, and a directory to keep the kubernetes root ca file:
+~~~
+sudo mkdir -p \
+  /var/lib/kubelet \
+  /var/lib/kube-proxy \
+  /etc/cni/net.d \
+  /opt/cni/bin \
+  /var/lib/kubernetes \
+~~~
+
+  /var/run/kubernetes
