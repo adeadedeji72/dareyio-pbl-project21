@@ -1458,3 +1458,62 @@ Output:
   "platform": "linux/amd64"
 }
 ~~~
+ 
+4. To get the status of each component:
+~~~
+kubectl get componentstatuses --kubeconfig admin.kubeconfig
+~~~
+Output
+~~~
+Warning: v1 ComponentStatus is deprecated in v1.19+
+NAME                 STATUS      MESSAGE                                                                                        ERROR
+scheduler            Unhealthy   Get "https://127.0.0.1:10259/healthz": dial tcp 127.0.0.1:10259: connect: connection refused
+controller-manager   Healthy     ok
+etcd-2               Healthy     {"health":"true"}
+etcd-1               Healthy     {"health":"true"}
+etcd-0               Healthy     {"health":"true"}
+~~~
+
+5. On one of the controller nodes, I configured Role Based Access Control (RBAC) so that the api-server has necessary authorization for for the kubelet.
+Create the **ClusterRole**:
+~~~
+cat <<EOF | kubectl apply --kubeconfig admin.kubeconfig -f -
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  annotations:
+    rbac.authorization.kubernetes.io/autoupdate: "true"
+  labels:
+    kubernetes.io/bootstrapping: rbac-defaults
+  name: system:kube-apiserver-to-kubelet
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - nodes/proxy
+      - nodes/stats
+      - nodes/log
+      - nodes/spec
+      - nodes/metrics
+    verbs:
+      - "*"
+EOF
+~~~
+ Create the ClusterRoleBinding to bind the kubernetes user with the role created above:
+~~~
+cat <<EOF | kubectl --kubeconfig admin.kubeconfig  apply -f -
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: system:kube-apiserver
+  namespace: ""
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:kube-apiserver-to-kubelet
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: kubernetes
+EOF
+~~~
