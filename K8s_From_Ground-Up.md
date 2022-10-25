@@ -1475,6 +1475,12 @@ etcd-0               Healthy     {"health":"true"}
 ~~~
 
 5. On one of the controller nodes, I configured Role Based Access Control (RBAC) so that the api-server has necessary authorization for for the kubelet.
+Before we begin to bootstrap the worker nodes, it is important to understand that the K8s API Server authenticates to the kubelet as the kubernetes user using the same kubernetes.pem certificate.
+
+We need to configure Role Based Access (RBAC) for Kubelet Authorization:
+
+Configure RBAC permissions to allow the Kubernetes API Server to access the Kubelet API on each worker node. Access to the Kubelet API is required for retrieving metrics, logs, and executing commands in pods.
+Create the system:kube-apiserver-to-kubelet ClusterRole with permissions to access the Kubelet API and perform most common tasks associated with managing pods on the worker nodes:
 Create the **ClusterRole**:
 ~~~
 cat <<EOF | kubectl apply --kubeconfig admin.kubeconfig -f -
@@ -1499,6 +1505,7 @@ rules:
       - "*"
 EOF
 ~~~
+ Bind the system:kube-apiserver-to-kubelet ClusterRole to the kubernetes user so that API server can authenticate successfully to the kubelets on the worker nodes:
  Create the ClusterRoleBinding to bind the kubernetes user with the role created above:
 ~~~
 cat <<EOF | kubectl --kubeconfig admin.kubeconfig  apply -f -
