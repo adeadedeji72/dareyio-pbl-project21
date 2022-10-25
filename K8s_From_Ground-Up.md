@@ -528,7 +528,7 @@ cat > master-kubernetes-csr.json <<EOF
   "names": [
     {
       "C": "NG",
-      "L": "NIGERIA",
+      "L": "OYO",
       "O": "Kubernetes",
       "OU": "BAYO DEVOPS",
       "ST": "Ibadan"
@@ -570,7 +570,7 @@ cat > kube-scheduler-csr.json <<EOF
       "C": "NG",
       "L": "OYO",
       "O": "system:kube-scheduler",
-      "OU": "DAREY.IO DEVOPS",
+      "OU": "BAYO DEVOPS",
       "ST": "Ibadan"
     }
   ]
