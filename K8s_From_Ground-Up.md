@@ -1638,6 +1638,7 @@ sudo mkdir -p \
   /etc/cni/net.d \
   /opt/cni/bin \
   /var/lib/kubernetes \
+  /var/run/kubernetes
 ~~~
 
-  /var/run/kubernetes
+ 
