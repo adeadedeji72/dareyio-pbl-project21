@@ -1656,3 +1656,41 @@ Install CNI into */opt/cni/bin/*
 ~~~
 sudo tar -xvf cni-plugins-linux-amd64-v0.9.1.tgz -C /opt/cni/bin/
 ~~~
+
+The output shows the plugins that comes with the CNI.
+~~~
+./
+./macvlan
+./flannel
+./static
+./vlan
+./portmap
+./host-local
+./vrf
+./bridge
+./tuning
+./firewall
+./host-device
+./sbr
+./loopback
+./dhcp
+./ptp
+./ipvlan
+./bandwidth
+~~~
+
+7. Download binaries for kubectl, kube-proxy, and kubelet
+~~~
+wget -q --show-progress --https-only --timestamping \
+  https://storage.googleapis.com/kubernetes-release/release/v1.25.3/bin/linux/amd64/kubectl \
+  https://storage.googleapis.com/kubernetes-release/release/v1.25.3/bin/linux/amd64/kube-proxy \
+  https://storage.googleapis.com/kubernetes-release/release/v1.25.3/bin/linux/amd64/kubelet
+~~~
+
+8. Install the downloaded binaries
+~~~
+{
+  chmod +x  kubectl kube-proxy kubelet  
+  sudo mv  kubectl kube-proxy kubelet /usr/local/bin/
+}
+~~~
