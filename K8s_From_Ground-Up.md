@@ -1524,3 +1524,36 @@ subjects:
     name: kubernetes
 EOF
 ~~~
+
+### CONFIGURING THE KUBERNETES WORKER NODES ###
+**Configuring the Kubernetes Worker nodes**
+
+The following components will be installed on each node:
+
+- kubelet
+- kube-proxy
+- Containerd or Docker
+- Networking plugins
+1. SSH into the worker nodes
+ 
+Worker-1
+~~~
+worker_1_ip=$(aws ec2 describe-instances \
+--filters "Name=tag:Name,Values=${NAME}-worker-0" \
+--output text --query 'Reservations[].Instances[].PublicIpAddress')
+ssh -i k8s-cluster-from-ground-up.id_rsa ubuntu@${worker_1_ip}
+~~~
+Worker-2
+~~~
+worker_2_ip=$(aws ec2 describe-instances \
+--filters "Name=tag:Name,Values=${NAME}-worker-1" \
+--output text --query 'Reservations[].Instances[].PublicIpAddress')
+ssh -i k8s-cluster-from-ground-up.id_rsa ubuntu@${worker_2_ip}
+~~~
+Worker-3
+~~~
+worker_3_ip=$(aws ec2 describe-instances \
+--filters "Name=tag:Name,Values=${NAME}-worker-2" \
+--output text --query 'Reservations[].Instances[].PublicIpAddress')
+ssh -i k8s-cluster-from-ground-up.id_rsa ubuntu@${worker_3_ip}
+~~~
