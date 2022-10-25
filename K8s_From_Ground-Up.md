@@ -1694,3 +1694,8 @@ wget -q --show-progress --https-only --timestamping \
   sudo mv  kubectl kube-proxy kubelet /usr/local/bin/
 }
 ~~~
+
+9. Configure *kubelet*:
+In the home directory, you should have the certificates and kubeconfig file for each node. A list in the home folder should look like below:
+
+![](worker_nodes_filelist.jpg)
