@@ -1771,3 +1771,16 @@ cat > 99-loopback.conf <<EOF
 }
 ~~~
 EOF
+
+11. Move the files to the network configuration directory:
+~~~
+sudo mv 172-20-bridge.conf 99-loopback.conf /etc/cni/net.d/
+~~~
+ 
+12. Store the worker’s name in a variable:
+~~~
+NAME=k8s-cluster-from-ground-up
+WORKER_NAME=${NAME}-$(curl -s http://169.254.169.254/latest/user-data/ \
+  | tr "|" "\n" | grep "^name" | cut -d"=" -f2)
+echo "${WORKER_NAME}"
+~~~
