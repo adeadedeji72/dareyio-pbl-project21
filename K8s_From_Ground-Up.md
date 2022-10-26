@@ -1878,3 +1878,28 @@ mode: "iptables"
 clusterCIDR: "172.31.0.0/16"
 EOF
 ~~~
+
+17. Configure the Kube Proxy systemd service
+~~~
+cat <<EOF | sudo tee /etc/systemd/system/kube-proxy.service
+[Unit]
+Description=Kubernetes Kube Proxy
+Documentation=https://github.com/kubernetes/kubernetes
+[Service]
+ExecStart=/usr/local/bin/kube-proxy \\
+  --config=/var/lib/kube-proxy/kube-proxy-config.yaml
+Restart=on-failure
+RestartSec=5
+[Install]
+WantedBy=multi-user.target
+EOF
+~~~
+ 
+18. Reload configurations and start both services
+~~~
+{
+  sudo systemctl daemon-reload
+  sudo systemctl enable containerd kubelet kube-proxy
+  sudo systemctl start containerd kubelet kube-proxy
+}
+~~~
