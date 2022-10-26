@@ -1734,3 +1734,40 @@ Network configuration will look like this:
 
 ![](pod_network.png)
 ![](k8s_network.png)
+
+Notice, that both containers share a single virtual network interface veth0 that belongs to a virtual network within a single node. This virtual interface veth0 is used to allow communication from a pod to the outer world through a bridge cbr0 (custom bridge). This bridge is an interface that forwards the traffic from the Pods on one node to other nodes through a physical network interface eth0. Routing between the nodes is done by means of a router with the routing table.
+
+**Pod Network**
+
+You must decide on the Pod CIDR per worker node. Each worker node will run multiple pods, and each pod will have its own IP address. IP address of a particular Pod on worker node 1 should be able to communicate with the IP address of another particular Pod on worker node 2. For this to become possible, there must be a bridge network with virtual network interfaces that connects them all together. Here is an interesting read that goes a little deeper into how it works Bookmark that page and read it over and over again after you have completed this project
+
+10. Configure the bridge and loopback networks
+Bridge:
+~~~
+cat > 172-20-bridge.conf <<EOF
+{
+    "cniVersion": "0.3.1",
+    "name": "bridge",
+    "type": "bridge",
+    "bridge": "cnio0",
+    "isGateway": true,
+    "ipMasq": true,
+    "ipam": {
+        "type": "host-local",
+        "ranges": [
+          [{"subnet": "${POD_CIDR}"}]
+        ],
+        "routes": [{"dst": "0.0.0.0/0"}]
+    }
+}
+EOF
+~~~
+Loopback:
+~~~
+cat > 99-loopback.conf <<EOF
+{
+    "cniVersion": "0.3.1",
+    "type": "loopback"
+}
+~~~
+EOF
