@@ -1699,3 +1699,37 @@ wget -q --show-progress --https-only --timestamping \
 In the home directory, you should have the certificates and kubeconfig file for each node. A list in the home folder should look like below:
 
 ![](worker_nodes_filelist.jpg)
+
+
+**Configuring the network**
+Get the POD_CIDR that will be used as part of network configuration
+
+~~~
+POD_CIDR=$(curl -s http://169.254.169.254/latest/user-data/ \
+  | tr "|" "\n" | grep "^pod-cidr" | cut -d"=" -f2)
+echo "${POD_CIDR}"
+~~~
+
+In case you are wondering where this POD_CIDR is coming from. Well, this was configured at the time of creating the worker nodes. Remember the for loop below? The --user-data flag is where we specified what we want the POD_CIDR to be. It is very important to ensure that the CIDR does not overlap with EC2 IPs within the subnet. In the real world, this will be decided in collaboration with the Network team.
+
+Why do we need a network plugin? And why network configuration is crucial to implementing a Kubernetes cluster?
+
+First, let us understand the Kubernetes networking model:
+
+The networking model assumes a flat network, in which containers and nodes can communicate with each other. That means, regardless of which node is running the container in the cluster, Kubernetes expects that all the containers must be able to communicate with each other. Therefore, any network interface used for a Kubernetes implementation must follow this requirement. Otherwise, containers running in pods will not be able to communicate. Of course, this has security concerns. Because if an attacker is able to get into the cluster through a compromised container, then the entire cluster can be exploited.
+
+To mitigate security risks and have a better controlled network topology, Kubernetes uses CNI (Container Network Interface) to manage Network Policies which can be used to operate the Pod network through external plugins such as Calico, Flannel or Weave Net to name a few. With these, you can set policies similar to how you would configure segurity groups in AWS and limit network communications through either cidr ipBlock, namespaceSelectors, or podSelectors, you will see more of these concepts further on.
+
+To really understand Kubernetes further, let us explore some basic concepts around its networking:
+Pods:
+
+A Pod is the basic building block of Kubernetes; it is the smallest and simplest unit in the Kubernetes object model that you create or deploy. A Pod represents a running process on your cluster.
+It encapsulates a container running an application such as the Tooling website (or, in some cases, multiple containers), storage resources, a unique network IP, and options that govern how the container(s) should run. All the containers running inside a Pod can reach each other on localhost.
+
+For example, if you deploy both Tooling and MySQL containers inside the same pod, then both of them are considered running on localhost. Although this design pattern is not ideal. Most likely they will run in separate Pods. In most cases one Pod contains just one container, but there are some design patterns that imply multi-container pods (e.g. sidecar, ambassador, adapter) – you can read more about them in this article.
+
+For a better understanding, of Kubernetes networking, let us assume that we have 2-containers in a single Pod and we have 2 such Pods (we can actually have as many pods of the same composition as our node resources would allow).
+
+Network configuration will look like this:
+
+![](pod_network.png)
