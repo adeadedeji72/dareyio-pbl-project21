@@ -1903,3 +1903,7 @@ EOF
   sudo systemctl start containerd kubelet kube-proxy
 }
 ~~~
+
+**The workers are ready!**
+![](k8s_workers1.jpg)
+![](k8s_workers2.jpg)
