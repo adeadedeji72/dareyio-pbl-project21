@@ -1733,3 +1733,4 @@ For a better understanding, of Kubernetes networking, let us assume that we have
 Network configuration will look like this:
 
 ![](pod_network.png)
+![](k8s_network.png)
